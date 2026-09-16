@@ -1,0 +1,173 @@
+## 1. SQL CRUD İşlemleri ##
+
+//USER TABLOSU OLUŞTURMA
+
+
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    birthday TEXT NOT NULL 
+);
+
+
+
+// 1.Tabloya 3 adet kullanıcı ekleyin.
+
+
+INSERT INTO users (full_name, email, birthday) 
+VALUES 
+    ('Meltem Demir', 'meltemDemir@example.com', '1996-10-30'),
+    ('Ayşe Mavi', 'ayse@gmail.com', '1995-10-22'),
+    ('Selin Sezer', 'selin@example.com', '1988-12-03');
+    ('Fatma Ak', 'fatma_ak@gmail.com', '1998-01-03');
+
+/*--ÇIKTI: Sonuç: 4 rows inserted. */
+
+
+
+// 2.Kullanıcıları listeleyin.
+
+SELECT * FROM users;
+
+/*--ÇIKTI: id    fullname          email                      birthday 
+            1   Meltem Demir    meltemDemir@example.com      1994-10-30
+            2   Ayşe Mavi       ayse@gmail.com               1995-10-22
+            3   Selin Sezer     selin@example.com            1988-12-03
+            4   Fatma Ak        fatma_ak@gmail.com           1998-01-03
+
+*/ 
+
+
+
+// 3.Kullanıcılardan birinin email adresini güncelleyin. 
+
+UPDATE users 
+SET email = 'meltemDemir96@gmail.com',
+    birthday = '1996-10-30' 
+WHERE id = 1;
+
+/*--ÇIKTI: 1 row updated.
+ 
+ ESKİ DEĞER-->  1   Meltem Demir    meltemDemir@example.com      1994-10-30
+ YENİ DEĞER-->  1   Meltem Demir    meltemDemir96@gmail.com      1996-10-30
+
+*/
+
+
+// 4.Kullanıcılardan birini silin. 
+
+DELETE FROM users WHERE id = 3;
+
+/*--ÇIKTI: 1 row deleted.
+
+SON DURUMDA TABLO:     id    fullname          email                      birthday 
+                        1   Meltem Demir    meltemDemir96@gmail.com      1996-10-30
+                        2   Ayşe Mavi       ayse@gmail.com               1995-10-22
+                        4   Fatma Ak        fatma_ak@gmail.com           1998-01-03
+*/
+
+
+## 2. INNER JOIN ##
+
+/* users tablosunda -> id, fullname, email ve birthday bulunmakta.
+   orders tablosunda -> id, user_id, order_number, status ve total_amount olduğunu varsayalım.
+
+   INNER JOIN kullanarak bu iki tabloyu aynı sonuç içerisinde listeleyebiliriz. 
+
+   INNER JOIN, iki veya daha fazla tablo arasındaki kesişim kümesini veren birleştirme türüdür. Doğal olarak biz bu iki tabloyu birleştirirken ortak bir veri bulmamız gerekmektedir.
+   İki tablo incelendiğinde ortak noktaları users tablosundaki id ile orders tablosundaki user_id dir.
+   YAni özetle user.id ile orders.user_id ilişkili ile iki tablonun kesişimlerini alacağız. 
+   Eğer iki tablo arasında bu verilerle bir kesişim elde edilmediyse o veriler tabloya hiç yazılmaz. Örneğin users tablosunda id'si 4 olan bir data bulunuyorken orders tablosunda user_id si 4 olan bir data yoksa bu ele alınmaz. 
+   Ama eğer bir kullanıcının birden fazla siparişi varsa her sipariş için bir satır gözükür. 
+   Yani users tablosundaki id'si 4 olan kullanıcının orders tablosundaki user_id'si 4 olan 3 farklı siparişi varsa eğer. Birleşimde bu 3 siparişte gösterilir.
+
+*/
+
+//KOD: 
+
+SELECT 
+    users.fullname,
+    users.email,
+    orders.order_number
+FROM users                                              //FROM orders da yazabilirdik. İkiside veritabanı için aynıdır ve birebir aynı sonucu verir.
+INNER JOIN orders ON users.id = orders.user_id;         // "ON users.id = orders.user_id" ifadesi birleştirme işleminin hangi kurala göre yapılacağını söyler. İki tablonun kesişimi id verileri olduğu için buradan birleştirilir.
+
+
+
+## 3. Mobil Uygulama Güvenliği ##
+
+/*
+
+a) Ekran görüntüsü ve ekran kaydı
+
+-Bir bankacılık uygulamasında kredi kartı bilgileri veya bakiye gösterilirken ekran görüntüsü alınmasını ve ekran kaydı yapılmasını engellemek neden önemlidir?
+    
+    Bunlardan en önemli sebebi güvenliktir. 
+    Kötü amaçlı yazılımlar arka planda gizlice ekran kaydı alarak veya ekran görüntüsü çekerek kart numarası, CVC kodu, şifre gibi kullanıcıya özel hassas verileri çalabilir ve bunları kullanabilirler. 
+    Uygulama arka plana atıldığında işletim sistemi otomatik olarak ekran görüntüsü alır. Eğer engelleme yapılmazsa kullanıcının verileri yine çalınabilir.
+    Birde kullanıcı öneğin banka uygulamasına girdiğinde yanlışlıkla ekran görüntüsü alıp üçüncü kişilerle paylaşabilir. Bu gibi riskli durumları engellemek için önemlidir.
+
+-Android ve iOS'ta bunun için kullanılan güvenlik mekanizmalarından bildiğiniz bir tanesini yazın.
+    
+    Derste öğrendiğim mekanizmaları örnek olarak kullanacağım. 
+    İos için: UIScreen.isCaptured --Bu bir tespit edici güvenlik mekanizmasıdır.
+    İAndroid için: WindowManager.FLAG_SECURE --Bu bir önleyici (preventive) güvenlik mekanizmasıdır
+
+
+b) Overlay saldırıları
+
+-Bir saldırganın başka bir uygulamanın üzerine sahte bir buton veya ekran yerleştirerek kullanıcıyı yanıltması nasıl gerçekleşebilir? Kısaca örnek verin.
+   
+    Buna Gölgeleme Saldırısı denilir. Kullanıcıya buton ile yapılan yönlendirme ile gölgeleme saldırısı yapılabilri. 
+    Örneğin kullanıcı bir dizi izleme sitesine giriş yapar. Burada sayfanın ortasında bir tebrikler 5.000TL kazandınız diye bir mesaj ve altında da Hediyenizi almak için tıklayınız diye bir buton bulunur.
+    Biz hediye alacağımızı sanıp bu butona tıkladığımızda arka plana bizim mobil bancalığımıza girip kendi hesaplarına para transferi işlemi yapabilirler. 
+
+
+c) Root / Jailbreak
+
+-Root edilmiş veya Jailbreak yapılmış bir cihaz neden normal bir cihaza göre daha risklidir? Saldırganın uygulamanın belleğindeki veya dosyalarındaki verilere erişebilmesine bir örnek verin.
+    
+    Telefonlar "Sandbox" (Korumalı Alan) mantığıyla çalışır. Yani her uygulama kendi kapalı kutusundadır. WhatsApp gidip Yapı Kredi uygulamasının verisini okuyamaz.
+    Root (Android) veya Jailbreak (iOS) yapıldığında bu koruma duvarı tamamen yıkılır. Telefonun kontrolü "yönetici" (root) yetkisine geçer. 
+    Böylece cihaza yüklenen kötü amaçlı bir uygulama, diğer tüm uygulamaların özel alanlarına erişimebilir. Yani banka bilgileri gibi tüm verilere sahip olabilir.
+    
+    Buna bir örnek verecek olursak; Kullanıcı şifresini ve tckn gibi önemli verilerini telefon hafızasındaki bir not defteri uygulamasında saklıyor olsun. 
+    Saldırgan, Root yetkisi sayesinde uygulamanın klasörüne girip bu verileri öğrenebilir ve kötü amaçlarla kullanabilir.
+
+
+
+d)SQLite ve şifreleme
+
+-Normal bir SQLite veritabanında kullanıcı bilgilerinin düz metin olarak bulunmasının ne gibi bir riski vardır?
+    SQLite veritabanı varsayılan olarak şifrelenmediği için dosya erişimi sağlayan bir saldırgan tüm verileri doğrudan metin olarak okuyabilir.
+    Bu durum; kötü amaçlı bir kişi bizim hassas verilerimize ekstra hiçbir çaba harcamadan çalabilir.
+
+-SQLCipher gibi bir çözüm kullanıldığında ne değişir?
+    SQLCipher kullanıldığında, veritabanı dosyası standart metin formatı yerine 256-bit AES şifreleme algoritmasıyla tamamen kilitlenir.
+    Saldırgan veritabanı dosyasını ele geçirse bile, şifreleme anahtarı yani key olmadan verileri okuyamaz. Dosyada sadece anlamsız karakterler görünür.
+
+
+
+
+e) Access Token ve Refresh Token
+
+-Access Token ile Refresh Token arasındaki farkı kendi cümlelerinizle açıklayın.
+    Access Token, uygulama içinde işlem yaparken sunucuya kimliğimizi doğrulamak için gönderdiğimiz ana erişim anahtarıdır. 
+    Refresh Token ise kullanım süresi dolan Access Token'ı kullanıcıya tekrar şifre sordurmadan yenilemek için arka planda çalışan uzun ömürlü yedek anahtardır.
+
+-Access Token neden kısa süreli tutulur?
+    Ağ üzerinde yapılan her istekte sürekli taşındığı için dinlenme ve çalınma olasılığı yüksektir.
+    Olası bir sızıntı durumunda saldırganın erişim yetkisini hızlıca sonlandırılması ve geçerliliğini yitirmesi sebebiyle kısa tutulur.
+
+-Refresh Token neden daha güvenli bir yerde saklanmalıdır?
+    Çünkü Refresh Token, yeni Access Token'lar basabilen bir "yetki üretim merkezi" gibidir. 
+    Saldırganın eline geçmesi durumunda hesaba süresiz erişim imkanı tanıyacağı için cihazın güvenli donanımsal alanlarında mesela KeyStore'a şifrelenerek korunmalıdır.
+
+-Çıkış yapıldığında neden Refresh Token iptal edilir?
+    Kullanıcı bilinçli olarak oturumu kapattıktan sonra, eğer biri bu token'ı ele geçirirse arka planda gizlice yeni bir Access Token alıp hesaba tekrar sızamasın diye sunucu tarafında tamamen öldürülmelidir.
+
+*/
+
