@@ -1,0 +1,47 @@
+Öğrenci, Bölüm ve Ders ilişkilerini 3NF kurallarına uygun olarak normalize edip DDL sorgularını yazın.
+
+1.Öğrenciler
+
+CREATE TABLE students(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_number TEXT UNIQUE NOT NULL,
+    full_name TEXT NOT NULL,
+    department_id INTEGER NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+
+
+2.Bölümler
+
+CREATE TABLE departments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+
+
+
+3.Dersler
+
+CREATE TABLE courses(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT UNIQUE NOT NULL,
+    full_name TEXT NOT NULL,
+    department_id INTEGER NOT NULL,
+    FOREIGN KEY (department_id) REFERENCES departments(id)
+);
+
+
+
+4.Öğrenci Ders Kayıtları
+
+CREATE TABLE enrollments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_id INTEGER NOT NULL,
+    course_id INTEGER NOT NULL,
+    term TEXT NOT NULL,
+    grade TEXT,
+    FOREIGN KEY (student_id) REFERENCES students(id),
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+);
