@@ -1,0 +1,26 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS students(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_number TEXT UNIQUE NOT NULL,
+    full_name TEXT UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS courses(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    course_code TEXT UNIQUE NOT NULL, ---örn:MOB001
+    title TEXT NOT NULL,
+    credit INTEGER NOT NULL CHECK(credit>0)
+);
+
+
+CREATE TABLE IF NOT EXISTS enrollments(
+    student_id INTEGER NOT NULL,
+    course_id INTEGER NOT NULL,
+    enrollment_code DATETIME DEFAULT CURRENT_TIMESTAMP,
+    final_grade INTEGER CHECK(final_grade BETWEEN 0 AND 100),
+    PRIMARY KEY(student_id,course_id), // BIRINCIL ANAHTAR Aynı derse 
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE, //öğrenci id silinirse öğrenciler silinir
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE RESTRICT,
+);
