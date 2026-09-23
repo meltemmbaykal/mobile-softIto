@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BookStore Dashboard</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0d0e12;
+        --surface: #161822;
+        --surface-hover: #1e202d;
+        --border: #2a2d3d;
+        --border-focus: #ff9f43;
+        --text: #f1f2f6;
+        --text-muted: #8d93a5;
+        --accent: #ff9f43;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --badge-bg: rgba(255, 159, 67, 0.12);
+      }
+      body {
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+          "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+        color: var(--text);
+        padding: 32px 20px;
+      }
+      .ambient-glow-1 {
+        position: absolute;
+        top: 50px;
+        left: 35%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 159, 67, 0.45) 20%,
+          rgba(184, 174, 174, 0) 50%
+        );
+        border-radius: 30%;
+        z-index: -1;
+      }
+
+      .header-area {
+        max-width: 1080px;
+        margin: 0 auto 32px auto;
+        background: rgba(184, 174, 174, 0);
+        backdrop-filter: blur(46px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+      }
+
+      .header-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: var(--badge-bg);
+        border: 1px solid rgba(255, 159, 67, 0.3);
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .pulse-dot {
+        width: 7px;
+        height: 7px;
+        background-color: var(--success);
+        border-radius: 50%;
+        animation: pulseAnim 2s infinite;
+      }
+
+      @keyframes pulseAnim {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.35;
+          transform: scale(1.4);
+        }
+      }
+
+      h1 {
+        font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        background: linear-gradient(90deg, #ffffff 0%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .header-desc {
+        color: var(--text-muted);
+        margin-top: 6px;
+        font-size: 14px;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #0d0e12;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 159, 67, 0.3);
+      }
+
+      .download-icon {
+        display: inline-block;
+        font-size: 25px;
+        animation: bounceAnim 1.4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+      }
+
+      @keyframes bounceAnim {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(10px);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .header-area {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 20px;
+        }
+        .header-actions {
+          width: 100%;
+          margin-top: 10px;
+        }
+        .btn-primary {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        margin: 0 auto;
+        max-width: 1080px;
+      }
+
+      @media (min-width: 768px) {
+        .dashboard-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1024px) {
+        .dashboard-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      .glass-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        border-radius: 16px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: relative;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+          border-color 0.25s ease, background-color 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-5px);
+        background: var(--surface-hover);
+        border-color: var(--border-focus);
+        box-shadow: 0 12px 28px rgba(255, 159, 67, 0.15);
+      }
+
+      .card-main {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .card-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        background: rgba(255, 159, 67, 0.1);
+        border: 1px solid rgba(255, 159, 67, 0.2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+
+      .card-details {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-val {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text);
+        line-height: 1.1;
+      }
+
+      .card-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 4px;
+      }
+
+      .card-footer {
+        align-self: flex-start;
+        font-size: 11px;
+        color: var(--success);
+        font-weight: 600;
+        background: rgba(16, 185, 129, 0.1);
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+
+      .card-footer.warning {
+        color: var(--warning);
+        background: rgba(245, 158, 11, 0.1);
+        border-color: rgba(245, 158, 11, 0.2);
+      }
+
+      .skeleton-container {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+      }
+
+      .skeleton-card {
+        width: 320px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.03) 25%,
+          rgba(255, 255, 255, 0.15) 50%,
+          rgba(255, 255, 255, 0.03) 75%
+        );
+        background-size: 200% 100%;
+        border-radius: 8px;
+      }
+
+      .skeleton-title {
+        width: 60%;
+        height: 20px;
+      }
+      .skeleton-line-1 {
+        width: 100%;
+        height: 12px;
+      }
+      .skeleton-line-2 {
+        width: 80%;
+        height: 12px;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ambient-glow-1"></div>
+
+    <div id="dashboardContent">
+      <div class="header-area">
+        <div class="header-content">
+          <div class="header-badge">
+            <span class="pulse-dot"></span>
+            <span>Mağaza Verileri Senkronize</span>
+          </div>
+          <h1>BookStore Mağaza Paneli</h1>
+          <p class="header-desc">
+            Aylık Satış Analizi + Stok Durumu + En Çok Satanlar
+          </p>
+        </div>
+        <div class="header-actions">
+          <button id="downloadBtn" class="btn-primary">
+            <span class="download-icon">⬇️</span>
+            <span>Rapor İndir</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">📚</div>
+            <div class="card-details">
+              <div class="card-val">1.240 Adet</div>
+              <span class="card-label">Aylık Kitap Satışı</span>
+            </div>
+          </div>
+          <div class="card-footer">%14 artış sağlandı</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">💰</div>
+            <div class="card-details">
+              <div class="card-val">285.000 ₺</div>
+              <span class="card-label">Toplam Ciro</span>
+            </div>
+          </div>
+          <div class="card-footer">Online + Mağaza</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">🔥</div>
+            <div class="card-details">
+              <div class="card-val">Simyacı</div>
+              <span class="card-label">En Çok Satan</span>
+            </div>
+          </div>
+          <div class="card-footer">342 Adet Satıldı</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">⚠️</div>
+            <div class="card-details">
+              <div class="card-val">12 Kitap</div>
+              <span class="card-label">Kritik Stok</span>
+            </div>
+          </div>
+          <div class="card-footer warning">Sipariş Verilmeli</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">👥</div>
+            <div class="card-details">
+              <div class="card-val">4.850</div>
+              <span class="card-label">Kayıtlı Okuyucu</span>
+            </div>
+          </div>
+          <div class="card-footer">+120 Yeni Üye (Bu Hafta)</div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-main">
+            <div class="card-icon">⭐</div>
+            <div class="card-details">
+              <div class="card-val">4.9 / 5.0</div>
+              <span class="card-label">Mağaza Puanı</span>
+            </div>
+          </div>
+          <div class="card-footer">850 Değerlendirme</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="skeletonLoader" class="skeleton-container">
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-line-1"></div>
+        <div class="skeleton skeleton-line-2"></div>
+      </div>
+    </div>
+
+    <script>
+      const downloadBtn = document.getElementById("downloadBtn");
+      const dashboardContent = document.getElementById("dashboardContent");
+      const skeletonLoader = document.getElementById("skeletonLoader");
+
+      downloadBtn.addEventListener("click", () => {
+        dashboardContent.classList.add("hidden");
+        skeletonLoader.style.display = "flex";
+        setTimeout(() => {
+          skeletonLoader.style.display = "none";
+          dashboardContent.classList.remove("hidden");
+        }, 3000);
+      });
+    </script>
+  </body>
+</html>

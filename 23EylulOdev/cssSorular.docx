@@ -1,0 +1,77 @@
+CSS, Flutter ve React Native Soruları
+
+1. Flexbox ile CSS Grid arasındaki mimari fark nedir ve ne zaman hangisi seçilmelidir?
+
+--Flexbox tek bir eksende elemanları akıtır iken grid hem satır hem sutunları aynı anda yönetir. Flexbox içerik odaklı iken grid düzen odaklıdır.
+
+
+
+2. CSS Grid'deki fr (fractional unit) birimi, geleneksel yüzde ( % ) birimine göre neden daha güvenlidir?
+
+--Örneğin yüzde kullanırken kartların arasına boşluk koyarsak toplam genişlik %100'ü aşar ve tasarım ekrandan taşar.
+fr ise önce boşlukları hesaba katar, kalan net alanı kartlara eşit şekilde paylaştırır.
+Böylece herhangi bir karmaşık matematik hesabı yapmanıza gerek kalmaz ve ekran kayması riski tamamen ortadan kalkar.
+
+
+
+3. Neden "Desktop-First" ( max-width ) yerine "Mobile-First" ( min-width ) mimarisi tercih edilir?
+
+--Tarayıcılar CSS'i yukarıdan aşağıya okur. Mobile-First (min-width) yaklaşımında,
+en sade ve hafif olan mobil arayüz kodları standart olarak yüklenir. Ekran büyüdükçe karmaşık masaüstü kodları devreye girer.,
+Desktop-First yaklaşımında ise zayıf donanımlı bir mobil cihaz, önce ağır masaüstü kodlarını işlemek, ardından @media
+sorgularıyla bunları "ezip" iptal etmek zorunda kalır. Mobile-First performans, okunabilirlik ve bakım kolaylığı sağlar.
+
+
+
+4. CSS3'te transition ve animation yazarken neden top , left , width yerine transform ve opacity tercih
+edilmelidir?
+
+--Bu özelliklerle animasyon yapmak, tarayıcıya sayfadaki diğer tüm elemanların yerini ve boyutunu saniyede onlarca kez baştan hesaplattırır.
+Bu durum ana işlemciyi çok yorar ve animasyonun ekranda takılarak ilerlemesine neden olur. Çok yavaşlar.
+
+
+
+5. CSS Grid'de auto-fit ile minmax() birleşimi nasıl çalışır ve responsive tasarım açısından ne avantaj sağlar?
+
+--auto-fit ve minmax() ikilisi, hiç media query (@media) yazmadan kartların her ekrana otomatik sığmasını sağlar. 
+Kartlara minimum bir genişlik verirsiniz; ekran genişledikçe kartlar yan yana dizilir, ekran daraldıkça sığmayanlar alt satıra geçer. 
+Böylece her cihazda sorunsuz çalışan esnek ve tertemiz bir düzen elde etmiş olursunuz.
+
+6. grid-template-areas özelliğinin sağladığı en büyük kurumsal avantaj nedir?
+
+--grid-template-areas, sayfanın iskeletini HTML kodlarına dokunmadan doğrudan CSS üzerinden bir harita gibi görsel olarak yönetmeyi sağlar. 
+Bu sayede büyük projelerde veya ekip çalışmalarında tasarımın hangi parçasının nerede durduğu tek bakışta anlaşılır ve düzen değişiklikleri 
+saniyeler içinde yapılır. Kodun okunabilirliğini artırdığı için hem bakımı kolaylaştırır hem de zaman kazandırır.
+
+
+7. CSS'te clamp() fonksiyonunun 3 parametresi ne anlama gelir?
+
+--clamp(en-küçük, ideal, en-büyük) fonksiyonu; bir değere minimum sınır, esnek bir büyüklük ve maksimum sınır belirlemeye yarar.
+İlk değer : Elemanın düşebileceği en küçük boyuttur 
+İkinci değer : Ekran genişliğine göre akıcı şekilde büyüyüp küçülen esnek değerdir 
+Üçüncü değer: Elemanın ulaşabileceği en büyük sınır boyuttur 
+
+
+8. Bir CSS animasyonunun sonsuza kadar kesintisiz çalışması için hangi CSS kuralı kullanılır?
+
+--animation-iteration-count: infinite; kuralı kullanılır. Bu kural, animasyonun kaç kez tekrar edeceğini belirler ve
+infinite değeri verildiğinde döngü hiç bitmez.
+
+
+
+9. Flutter'da CSS Grid'in ve Flexbox'ın doğrudan karşılığı olan widget'lar nelerdir?
+
+--Flexbox'ın Karşılığı: Eğer elemanları yan yana dizmek istiyorsak Row, alt alta dizmek istiyorsak Column widget'ını (bileşenini) kullanırız.
+CSS Grid'in Karşılığı: Elemanları satranç tahtası gibi kutucuklar halinde (ızgara şeklinde) dizmek için GridView widget'ını kullanırız.
+
+
+10. React Native'de CSS Grid kullanılabilir mi? 
+Kullanılamıyorsa çok sütunlu ızgara yapısı nasıl oluşturulabilir?
+
+--Hayır, kullanılamaz. React Native'in altyapısı sadece Flexbox mantığını destekler, içinde CSS Grid sistemi yoktur.
+a)Uzun listelerde (Önerilen): FlatList bileşenini kullanırız ve koduna numColumns={2} yazarız.
+Sistem bunu otomatik olarak ızgaraya dönüştürür.
+
+b)Kısa veya sabit içeriklerde: Elemanları tutan ana kutuya (flexDirection: 'row') yan yana dizil ve
+"sığmayanları alt satıra at" (flexWrap: 'wrap') kurallarını veririz. İçindeki elemanlara da %50 genişlik vererek kendi 2
+sütunlu ızgaramızı oluşturmuş oluruz.
