@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      const sarjVeTutarHesapla = (
+        mevcutYuzde,
+        hedefYuzde,
+        bataryaKW,
+        istasyonKW,
+        saat,
+        fiyat
+      ) => {
+        const isGece = saat >= 22 || saat < 6;
+        const aktifTarife = isGece ? "Gece Tarifesi" : "Gündüz Tarifesi";
+        const tarifeKatsayisi = isGece ? 0.6 : 1.0;
+
+        if (mevcutYuzde >= hedefYuzde || bataryaKW <= 0 || istasyonKW <= 0) {
+          const tahminiSureDakika = 0;
+          const tahminiTutarTL = 0;
+          const sonuc = `
+         Tahmini Bekleme Süreniz: ${tahminiSureDakika},
+            Tahmini Tutar:  ${tahminiTutarTL}₺
+          `;
+          console.log(sonuc);
+          return { tahminiSureDakika, tahminiTutarTL, sonucMetni: sonuc };
+        }
+
+        const ihtiyacOlunanKwh = (bataryaKW * (hedefYuzde - mevcutYuzde)) / 100;
+        const tahminiSureDakika = Number(
+          ((ihtiyacOlunanKwh / istasyonKW) * 60).toFixed(2)
+        );
+        const tahminiTutarTL = Number(
+          (ihtiyacOlunanKwh * (fiyat * tarifeKatsayisi)).toFixed(2)
+        );
+
+        const sonuc = `
+         Tahmini Bekleme Süreniz: ${tahminiSureDakika},
+            Tahmini Tutar:  ${tahminiTutarTL}₺
+          `;
+        console.log(sonuc);
+
+        return {
+          tahminiSureDakika,
+          tahminiTutarTL,
+          aktifTarife,
+          sonucMetni: sonuc,
+        };
+      };
+
+      sarjVeTutarHesapla(20, 80, 80, 150, 14, 10); // Gündüz
+      sarjVeTutarHesapla(40, 60, 80, 150, 2, 10); // Gece
+      sarjVeTutarHesapla(70, 30, 80, 150, 2, 10); // if bloğuna girer
+    </script>
+  </body>
+</html>

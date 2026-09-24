@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS İlk Ders</title>
+  </head>
+  <body>
+    <script>
+      /*
+
+
+            //1.var felaketi süslü parantez dinlemez dışarıya sızar.
+            if (true) {
+              var tehlikeliSayi = 9999;
+            }
+            console.log("Var sızdı mı?", tehlikeliSayi);
+
+
+            //2. Let ve const Kalkanı: Süslü parantez bir oda çıkış yasak çıkamaz
+
+            if (true) {
+              let guvenliSayi = 42;
+              const PI = 3.1415;
+              console.log("Oda İçi:", guvenliSayi, PI);
+            }
+           console.warn("Oda Dışı:", guvenliSayi, PI); --burası gözükmez hata verir.
+
+
+            //3.Const değiştirilmezlik kuralı
+            const API_URL = "https://www.kodusts.com/v1";
+            console.log(API_URL);
+            //let API_URL = "tekrar eden link";
+
+
+            //DİKKAT
+            const arac = { marka: "Togg", model: "T10X" };
+            console.log(arac);
+            arac.renk = "Beyaz";
+            console.log(arac);
+
+            ///BU YASAK KULLANAMAZSIN
+            arac = { baska: "obje" };
+            console.log(arac);
+
+
+            //VERİ TİPLERİ & TİP DÖNÜŞÜM
+
+            const isim = "Meltem"; //String
+            const bataryaKapasite = 88.5; //Number(float/int ayrım almıyor)
+            const sarjTamamlandı = false; //boolean
+            let sonrakiRandevu; //undefined
+            const servisNotu = null; //NULL bilinçli olarak boş bırakılan değer
+            const büyükSayi = 234234234254543n; //bigİnt
+            const gizliAnahtar = Symbol("id"); //Symbol
+
+            console.log(typeof isim);
+            console.log(typeof bataryaKapasite);
+            console.log(typeof sarjTamamlandı);
+            console.log(typeof sonrakiRandevu);
+            console.log(typeof servisNotu);
+
+            console.log("5" + 4);
+            console.log("5" - 4);
+            console.log("5" * "4");
+            console.log("bes" * 2); //nan not a number  hatası
+
+
+            console.log(typeof NaN);
+            console.log(NaN === NaN);
+            console.log(Number.isNaN(NaN));
+
+
+
+            //Manuel Tip Dönüştürme (profesyonel yolu)
+            const stringFiyat = "1473.33";
+            const sayiFiyat = Number(stringFiyat);
+            const pixelDegeri = parseInt("48px", 10);
+            const metinSayi = String(2026);
+
+            console.log(stringFiyat);
+            console.log(sayiFiyat);
+            console.log(pixelDegeri);
+            console.log(metinSayi);
+
+
+            //Katı Eşitlik
+            // NEDEN her zaman === kullanmalıyız?
+
+            console.log(5 == "5"); //true(gevşek eşitlik tipi zorla çevirir ASLA kullanma)
+            console.log(5 === "5"); //false
+            console.log(0 == false); //true (gevşek eşitlik tipi zorla çevirir ASLA kullanma)
+            console.log(0 === false); //false
+            console.log(null == undefined); //true
+            console.log(null === undefined); //false
+
+            //Template Literals
+
+            const kullanici = "Esra Ergün";
+            const bakiye = 1000;
+            const harcama = 10000;
+            const eskiMesaj =
+              "Sayın " +
+              kullanici +
+              ", Kalan Bakiyeniz: " +
+              (bakiye - harcama) +
+              "TL'dir.";
+            console.log(eskiMesaj);
+
+            const modernMesaj = `Sayın ${kullanici},
+            Bugunkü Harcamanız: ${harcama}₺,
+            Kalan Bakiyeniz:  ${bakiye - harcama}₺
+            Durum: ${bakiye - harcama > 1000 ? "Güvenli Bakiye" : "Kritik Bakiye"}`;
+            console.log(modernMesaj);
+
+
+
+            const bataryaSeviyesi = 14;
+            const istasyonUygunmu = true;
+            const bakiyeTL = 450;
+            const minumumGirisTutari = 200;
+
+            if (!istasyonUygunmu) {
+              console.log("İstasyon şu an Servis dışı veya meşgul");
+            } else if (bakiyeTL < minumumGirisTutari) {
+              console.log(
+                `Bakiye yetersiz! En az $ {minumumGirisTutari} gereklidir. Mevcut Bakiye: {bakiyeTL} TL.`
+              );
+            } else if (bataryaSeviyesi <= 20) {
+              console.log("Kritik Seviye Ultra hızlı Dc Şarj Moduna Geçiliyor.");
+            } else {
+              console.log("Standart Şarj Başlatılabilir.");
+            }
+
+
+            //js de şu 6 değer false olarak kabul edilir.
+            // false, 0, "", null, undefined, NaN
+            // bunun dışındaki HERŞEY [] boş dizi olarak true olark
+
+            const kullaniciGirdisi="";
+            if(kullaniciGirdisi){
+              console.log(`Girdi Dolu.`)
+            }else{
+              console.log(`Girdi Boş`)
+            }
+
+
+            //kosul?dogruysa_deger : yanlıssa_deger
+
+            const soketDurumu = "mesgul";
+            const durumMesaji =
+              soketDurumu === "Uygun" ? "Soket boşta" : "Soket kullanımda";
+            console.log(durumMesaji);
+
+
+      */
+      //arrow function
+      function toplaKlasik(sayi1, sayi2) {
+        return sayi1 + sayi2;
+      }
+      //modern fonksiyon (es6 standartlarıyla)
+      const toplaModern = (sayi1, sayi2) => {
+        return sayi1 + sayi2;
+      };
+
+      //tek satırlık function arrow
+      const toplaKısa = (sayi1, sayi2) => sayi1 + sayi2;
+
+      //tek parametreli
+      const karesiniAl = (sayi) => sayi * sayi; //tek değer olduğu için parantez kullanmamaıza gerek yok. Ama otomatik şuan parantez ekledi yok gibi düşün.
+
+      const profilUret = (ad, rol) => ({
+        ad: ad,
+        rol: rol,
+        kayitTarihi: 2026,
+      });
+      console.log("Toplama Sonucu:", toplaKlasik(15, 27));
+
+      console.log("Profil:", profilUret("Meltem", "Demir"));
+
+      //İndirimli Sepet Tutarı hesaplayıcı
+      const indirimliFiyat = (fiyat, yüzde) => {
+        return fiyat - fiyat * (yüzde / 100);
+      };
+      console.log("İndirimli Fiyat:", indirimliFiyat(100, 10));
+
+      //Şarj Süresi TAhmin.
+      //Verilecek değerler: mevcut Yüzde ,hedef yüzde,bataryaKw, istasyonKw
+
+      const sarjsuresi = (mevcutYüzde, hedefYüzde, bataryaKw, istasyonKw) => {
+        if (hedefYüzde > mevcutYüzde) {
+          const alinacakKw = istasyonKw > bataryaKw ? bataryaKw : istasyonKw;
+          const ihtiyacOlankWh = ((hedefYüzde - mevcutYüzde) / 100) * bataryaKw;
+
+          const sure = (ihtiyacOlankWh / alinacakKw) * 60;
+
+          console.log("Bekleme Süreniz: ", sure);
+        } else {
+          console.log("Zaten Hedefe ulaşıldı");
+        }
+        console.log(sarjsuresi(70, 100, 300, 400));
+      };
+    </script>
+  </body>
+</html>
